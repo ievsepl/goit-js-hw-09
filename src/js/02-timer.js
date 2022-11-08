@@ -1,5 +1,6 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const options = {
   enableTime: true,
@@ -10,7 +11,12 @@ const options = {
     // console.log(selectedDates[0]);
     if (selectedDates[0] > Date.now()) {
       refs.startBtn.disabled = false;
+    } else {
+      Notify.failure('Please choose a date in the future');
     }
+  },
+  onChange() {
+    startAgain();
   },
 };
 const refs = {
@@ -24,7 +30,6 @@ const refs = {
   fp: flatpickr('input#datetime-picker', options),
 };
 
-refs.startBtn.addEventListener('click', onStartTimer);
 refs.startBtn.disabled = true;
 
 //==================================================================
@@ -90,26 +95,25 @@ refs.startBtn.disabled = true;
 //==================================================================
 // ===========================CLASS---------------------------
 //==================================================================
-
+let timerId = null;
 const timer = {
-  timerId: null,
-  // deltaTime: null,
-  // isActive: false,
+  isActive: false,
   start() {
-    //   if (this.isActive) {
-    //     return;
-    //   }
+    if (this.isActive) {
+      return;
+    }
 
-    //   this.isActive = true;
+    this.isActive = true;
     refs.startBtn.disabled = true;
 
-    let timerId = setInterval(() => {
+    timerId = setInterval(() => {
       const dateNow = Date.now();
       const deltaTime = refs.fp.selectedDates[0] - dateNow;
       const { days, hours, minutes, seconds } = this.convertMs(deltaTime);
 
       if (this.addLeadingZero(seconds) <= 0) {
-        clearInterval(timerId);
+        // clearInterval(timerId);
+        this.stop();
       }
 
       refs.days.textContent = this.addLeadingZero(days);
@@ -118,6 +122,10 @@ const timer = {
       refs.seconds.textContent = this.addLeadingZero(seconds);
       // console.log(deltaTime);
     }, 1000);
+  },
+  stop() {
+    clearInterval(timerId);
+    this.isActive = false;
   },
 
   addLeadingZero(value) {
@@ -143,16 +151,15 @@ const timer = {
     return { days, hours, minutes, seconds };
   },
 };
-// if (refs.fp) {
-//   refs.startBtn.disabled = false;
+refs.startBtn.addEventListener('click', timer.start.bind(timer));
+
+// function onStartTimer() {
 //   timer.start();
 // }
-// console.log(refs.fp.selectedDates[0] - Date.now());
-function onStartTimer() {
-  if (refs.fp.selectedDates[0] > Date.now()) {
-    // refs.startBtn.disabled = false;
-    timer.start();
-  } else {
-    alert('Please choose a date in the future');
-  }
+function startAgain() {
+  timer.stop();
+  refs.days.textContent = '00';
+  refs.hours.textContent = '00';
+  refs.minutes.textContent = '00';
+  refs.seconds.textContent = '00';
 }
