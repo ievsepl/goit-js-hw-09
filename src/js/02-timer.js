@@ -20,7 +20,7 @@ const options = {
   },
 };
 const refs = {
-  // inputData: document.querySelector('input#datetime-picker'),
+  timerFace: document.querySelector('.timer'),
   startBtn: document.querySelector('[data-start]'),
   days: document.querySelector('[data-days]'),
   hours: document.querySelector('[data-hours]'),
@@ -31,6 +31,15 @@ const refs = {
 };
 
 refs.startBtn.disabled = true;
+
+refs.timerFace.style.color = 'blue';
+refs.timerFace.style.display = 'flex';
+refs.timerFace.style.gap = '30px';
+refs.timerFace.style.justifyContent = 'center';
+refs.timerFace.style.textAlign = 'center';
+refs.timerFace.style.marginTop = '20px';
+refs.timerFace.style.fontSize = '30px';
+refs.timerFace.style.fontWeight = 'bold';
 
 //==================================================================
 // ===========================FUNCTION---------------------------
