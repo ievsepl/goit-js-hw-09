@@ -24,7 +24,7 @@ function onStartCreate(e) {
   e.preventDefault();
   let increaseDelay = Number(form.delay.value);
   // let position = 0;
-  for (position = 1; position <= form.amount.value; position += 1) {
+  for (let position = 1; position <= form.amount.value; position += 1) {
     // if (position === 1) {
     //   increaseDelay;
     // } else {
